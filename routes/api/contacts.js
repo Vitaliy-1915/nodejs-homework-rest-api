@@ -19,7 +19,6 @@ router.get('/:contactId', async (req, res, next) => {
     const {contactId} = req.params;
     const result = await Contact.findById(contactId);
     if (!result) {
-      // eslint-disable-next-line new-cap
       throw new createError(404, "Not found");
     }
     res.json(result);
@@ -35,7 +34,6 @@ router.post('/', async (req, res, next) => {
   try {
     const { error } = schemas.add.validate(req.body);
     if (error) {
-      // eslint-disable-next-line new-cap
       throw new createError(400, error.message)
     }
     const result = await Contact.create(req.body);
@@ -50,12 +48,10 @@ router.put('/:contactId', async (req, res, next) => {
     const { contactId } = req.params;
     const { error } = schemas.add.validate(req.body);
     if (error) {
-      // eslint-disable-next-line new-cap
       throw new createError(400, error.message)
     }
     const result = await Contact.findByIdAndUpdate(contactId, req.body, {new: true});
     if (!result) {
-      // eslint-disable-next-line new-cap
       throw new createError(400, { "message": "missing fields" })
     }
     res.json(result);
@@ -69,12 +65,10 @@ router.patch('/:contactId/favorite', async (req, res, next) => {
     const { contactId } = req.params;
     const { error } = schemas.updateFavorite.validate(req.body);
     if (error) {
-      // eslint-disable-next-line new-cap
       throw new createError(400, error.message)
     }
     const result = await Contact.findByIdAndUpdate(contactId, req.body, {new: true});
     if (!result) {
-      // eslint-disable-next-line new-cap
       throw new createError(400, { "message": "missing field favorite" })
     }
     res.json(result);
@@ -88,7 +82,6 @@ router.delete('/:contactId', async (req, res, next) => {
     const { contactId } = req.params;
     const result = await Contact.findByIdAndDelete(contactId);
     if (!result) {
-      // eslint-disable-next-line new-cap
       throw new createError(404, "Not found");
     }
     res.status(200).json({ "message": "contact deleted" });
