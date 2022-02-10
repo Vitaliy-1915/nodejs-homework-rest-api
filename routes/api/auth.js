@@ -40,7 +40,7 @@ router.post("/signup", async (req, res, next) => {
 
 router.post("/login", async (req, res, next) => {
     try {
-                const { error } = schemas.signup.validate(req.body);
+        const { error } = schemas.signup.validate(req.body);
         if(error){
             throw new createError(400, error.message);
         };
@@ -56,7 +56,8 @@ router.post("/login", async (req, res, next) => {
         const payload = {
             id: user._id
         }
-        const token = jwt.sign(payload, SECRET_KEY, {expiresIn: "24h"});
+        const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "24h" });
+        await User.findByIdAndUpdate(user._id, { token });
         res.json({
             token,
             user: {
