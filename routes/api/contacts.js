@@ -4,18 +4,16 @@ const createError = require('http-errors');
 const {Contact, schemas} = require("../../models/contact");
 
 const {autchenticate} = require("../../middlewares");
-const { boolean, number } = require('joi');
 
 const router = express.Router();
 
 router.get('/', autchenticate, async (req, res, next) => {
   try {
-    const { page = 1, limit = 20, favorite = boolean } = req.query;
+    const { page = 1, limit = 20, favorite } = req.query;
     const { _id } = req.user;
-    console.log(favorite);
     const skip = (page - 1) * limit;
     const result = await Contact.find(
-      { owner: _id }, "", {favorite, skip, limit: +limit }).populate("owner", "email");
+      { owner: _id }, "", { favorite , skip, limit: +limit }).populate("owner", "email");
     res.json(result);
   } catch (error) {
     next(error);
