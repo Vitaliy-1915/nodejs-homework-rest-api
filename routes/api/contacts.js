@@ -3,11 +3,17 @@ const createError = require('http-errors');
 
 const {Contact, schemas} = require("../../models/contact");
 
+const {autchenticate} = require("../../middlewares");
+
 const router = express.Router();
 
-router.get('/', async (req, res, next) => {
+router.get('/', autchenticate, async (req, res, next) => {
   try {
-    const result = await Contact.find();
+    const { page = 1, limit = 20, favorite } = req.query;
+    const { _id } = req.user;
+    const skip = (page - 1) * limit;
+    const result = await Contact.find(
+      { owner: _id }, "", { favorite , skip, limit: +limit }).populate("owner", "email");
     res.json(result);
   } catch (error) {
     next(error);
@@ -30,13 +36,14 @@ router.get('/:contactId', async (req, res, next) => {
   };
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', autchenticate, async (req, res, next) => {
   try {
     const { error } = schemas.add.validate(req.body);
     if (error) {
       throw new createError(400, error.message)
     }
-    const result = await Contact.create(req.body);
+    const data = {...req.body, owner: req.user._id}
+    const result = await Contact.create(data);
     res.status(201).json(result)
   } catch (error) {
     next(error)
